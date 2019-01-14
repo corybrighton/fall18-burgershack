@@ -2,19 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BurgerShack.Models
 {
-  public class Drink
+  public class Drink : MenuItem
   {
-    [Required]
-    public string Name { get; set; }
-    [Required]
-    public string Description { get; set; }
-    [Range(1f, 10f)]
-    public float Price { get; set; }
-    public Drink(string name, string desc, float price)
+
+    public Drink(string name, string desc, float price) : base(name, desc, price)
     {
-      Name = name;
-      Description = desc;
-      Price = price;
+
     }
   }
 }

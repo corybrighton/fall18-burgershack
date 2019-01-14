@@ -1,22 +1,17 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BurgerShack.Models
 {
-  public class Burger
+  public class Burger : MenuItem
   {
-    [Required]
-    public string Name { get; set; }
-    [Required]
-    [MinLength(6)]
-    public string Description { get; set; }
-    [Range(5, float.MaxValue)]
-    public float Price { get; set; }
-
-    public Burger(string name, string desc, float price)
+    public List<string> Ingredince { get; set; }
+    public Burger(string name, string desc, float price = 2.15f) : base(name, desc, price)
     {
-      Name = name;
-      Description = desc;
-      Price = price;
+      Ingredince = new List<string>();
+      Ingredince.Add("Lettice");
+      Ingredince.Add("Tommato");
+      Ingredince.Add("Pickels");
     }
   }
 }
