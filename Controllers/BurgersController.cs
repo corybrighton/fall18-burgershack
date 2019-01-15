@@ -19,6 +19,10 @@ namespace BurgerShack.Controllers
     };
 
     private readonly BurgerRepository _burgerRepo;
+    public BurgersController(BurgerRepository repo)
+    {
+      _burgerRepo = repo;
+    }
 
     // GET api/Burgers
     [HttpGet]
