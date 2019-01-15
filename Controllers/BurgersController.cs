@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BurgerShack.Models;
+using BurgerShack.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerShack.Controllers
@@ -14,32 +15,30 @@ namespace BurgerShack.Controllers
   {
     public List<Burger> Burgers = new List<Burger>()
     {
-      new Burger("Mark Burger", "A delicious burger with bacon and stuff", 7.56f),
-      new Burger("Jake Burger", "Now with fries!", 8.54f),
-      new Burger("D$ Burger", "It's Mostly Foraged", 6.24f)
+
     };
 
-
+    private readonly BurgerRepository _burgerRepo;
 
     // GET api/Burgers
     [HttpGet]
     public IEnumerable<Burger> Get()
     {
-      return Burgers;
+      return _burgerRepo.GetAll();
     }
 
     // GET api/Burgers/5
     [HttpGet("{id}")]
     public ActionResult<Burger> Get(int id)
     {
-      try
+      Burger burger = _burgerRepo.GetBurgerById(id);
+      if (burger != null)
       {
-        return Burgers[id];
+        return Ok(burger);
       }
-      catch (Exception ex)
+      else
       {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH BURGER\"}");
+        return NotFound();
       }
     }
 
@@ -47,8 +46,7 @@ namespace BurgerShack.Controllers
     [HttpPost]
     public ActionResult<List<Burger>> Post([FromBody] Burger burger)
     {
-      Burgers.Add(burger);
-      return Burgers;
+      return Ok(_burgerRepo.AddBurger(burger));
     }
 
     // PUT api/Burgers/5

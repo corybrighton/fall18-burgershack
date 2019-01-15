@@ -10,31 +10,31 @@ namespace BurgerShack.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class FriesController : ControllerBase
+  public class SidesController : ControllerBase
   {
-    public List<Fries> Frys = new List<Fries>()
+    public List<Side> Sides = new List<Side>()
     {
-      new Fries("Mark Fries", "A delicious Fries with bacon and stuff", 7.56f),
-      new Fries("Jake Fries", "Now with fries!", 8.54f),
-      new Fries("D$ Fries", "It's Mostly Foraged", 6.24f)
+      new Side("Mark Fries", "A delicious Fries with bacon and stuff", 7.56f),
+      new Side("Jake Fries", "Now with fries!", 8.54f),
+      new Side("D$ Fries", "It's Mostly Foraged", 6.24f)
     };
 
 
 
-    // GET api/Fries
+    // GET api/Sides
     [HttpGet]
-    public IEnumerable<Fries> Get()
+    public IEnumerable<Side> Get()
     {
-      return Frys;
+      return Sides;
     }
 
     // GET api/Fries/5
     [HttpGet("{id}")]
-    public ActionResult<Fries> Get(int id)
+    public ActionResult<Side> Get(int id)
     {
       try
       {
-        return Frys[id];
+        return Sides[id];
       }
       catch (Exception ex)
       {
@@ -45,20 +45,20 @@ namespace BurgerShack.Controllers
 
     // POST api/Fries
     [HttpPost]
-    public ActionResult<List<Fries>> Post([FromBody] Fries fries)
+    public ActionResult<List<Side>> Post([FromBody] Side side)
     {
-      Frys.Add(fries);
-      return Frys;
+      Sides.Add(side);
+      return Sides;
     }
 
     // PUT api/Fries/5
     [HttpPut("{id}")]
-    public ActionResult<List<Fries>> Put(int id, [FromBody] Fries fries)
+    public ActionResult<List<Side>> Put(int id, [FromBody] Side fries)
     {
       try
       {
-        Frys[id] = fries;
-        return Frys;
+        Sides[id] = fries;
+        return Sides;
       }
       catch (Exception ex)
       {
@@ -69,12 +69,12 @@ namespace BurgerShack.Controllers
 
     // DELETE api/Fries/5
     [HttpDelete("{id}")]
-    public ActionResult<List<Fries>> Delete(int id)
+    public ActionResult<List<Side>> Delete(int id)
     {
       try
       {
-        Frys.Remove(Frys[id]);
-        return Frys;
+        Sides.Remove(Sides[id]);
+        return Sides;
       }
       catch (Exception ex)
       {
