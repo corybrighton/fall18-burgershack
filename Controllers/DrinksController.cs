@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BurgerShack.Models;
+using BurgerShack.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerShack.Controllers
@@ -12,34 +13,31 @@ namespace BurgerShack.Controllers
   [ApiController]
   public class DrinksController : ControllerBase
   {
-    public List<Drink> Drinks = new List<Drink>()
+    private readonly DrinkRepository _drinkRepo;
+    public DrinksController(DrinkRepository repo)
     {
-      new Drink("Root Mark Drink", "A delicious Drink with bacon and stuff", 5.56f),
-      new Drink("Jake Cola Drink", "More Cola less caffinen!", 3.54f),
-      new Drink("Dr D$ Drink", "Dr Pepper clone.", 9.24f)
-    };
-
-
+      _drinkRepo = repo;
+    }
 
     // GET api/Drinks
     [HttpGet]
     public IEnumerable<Drink> Get()
     {
-      return Drinks;
+      return _drinkRepo.GetAll();
     }
 
     // GET api/Drinks/5
     [HttpGet("{id}")]
     public ActionResult<Drink> Get(int id)
     {
-      try
+      Drink drink = _drinkRepo.GetDrinkById(id);
+      if (drink != null)
       {
-        return Drinks[id];
+        return Ok(drink);
       }
-      catch (Exception ex)
+      else
       {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH Drink\"}");
+        return NotFound();
       }
     }
 
@@ -47,40 +45,22 @@ namespace BurgerShack.Controllers
     [HttpPost]
     public ActionResult<List<Drink>> Post([FromBody] Drink drink)
     {
-      Drinks.Add(drink);
-      return Drinks;
+      return Ok(_drinkRepo.AddDrink(drink));
     }
 
     // PUT api/Drinks/5
     [HttpPut("{id}")]
-    public ActionResult<List<Drink>> Put(int id, [FromBody] Drink drink)
+    public ActionResult<Drink> Put(int id, [FromBody] Drink drink)
     {
-      try
-      {
-        Drinks[id] = drink;
-        return Drinks;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH Drink\"}");
-      }
+      return Ok(_drinkRepo.UpdateDrink(id, drink));
     }
 
-    // DELETE api/Drinks/5
+    // // DELETE api/Drinks/5
     [HttpDelete("{id}")]
-    public ActionResult<List<Drink>> Delete(int id)
+    public ActionResult<string> Delete(int id)
     {
-      try
-      {
-        Drinks.Remove(Drinks[id]);
-        return Drinks;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH Drink\"}");
-      }
+      if (_drinkRepo.DeleteDrink(id)) { return Ok("Successfully Deleted"); }
+      return BadRequest();
     }
 
   }

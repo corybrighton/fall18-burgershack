@@ -1,62 +1,44 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using BurgerShack.Models;
+using Dapper;
 
 namespace BurgerShack.Repositories
 {
   public class MenuRepository
   {
-    // Create
-    public MenuItem AddItem(MenuItem newItem)
+
+    private readonly IDbConnection _db;
+    public MenuRepository(IDbConnection db)
     {
-      FakeDB.Menu.Add(newItem);
-      return newItem;
+      _db = db;
     }
-    // Update
-    public MenuItem EditMenu(int id, MenuItem newItem)
-    {
-      try
-      {
-        FakeDB.Menu[id] = newItem;
-        return newItem;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return null;
-      }
-    }
+
+
     // Read
     public IEnumerable<MenuItem> GetAll()
     {
-      return FakeDB.Menu;
+      IEnumerable<Burger> burgers = GetAllBurgers();
+      IEnumerable<Drink> drinks = GetAllDrinks();
+      IEnumerable<Side> sides = GetAllSides();
+      List<MenuItem> menu = new List<MenuItem>();
+      menu.AddRange(burgers);
+      menu.AddRange(drinks);
+      menu.AddRange(sides);
+      return menu;
     }
-    public MenuItem GetItem(int id)
+    public IEnumerable<Burger> GetAllBurgers()
     {
-      try
-      {
-        return FakeDB.Menu[id];
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return null;
-      }
+      return _db.Query<Burger>("SELECT * FROM Burgers");
     }
-
-    // Delete
-    public bool DeleteMenuItem(int id)
+    public IEnumerable<Drink> GetAllDrinks()
     {
-      try
-      {
-        FakeDB.Menu.Remove(FakeDB.Menu[id]);
-        return true;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return false;
-      }
+      return _db.Query<Drink>("SELECT * FROM Drinks");
+    }
+    public IEnumerable<Side> GetAllSides()
+    {
+      return _db.Query<Side>("SELECT * FROM Sides");
     }
   }
 }

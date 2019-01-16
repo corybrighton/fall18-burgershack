@@ -13,11 +13,6 @@ namespace BurgerShack.Controllers
   [ApiController]
   public class BurgersController : ControllerBase
   {
-    public List<Burger> Burgers = new List<Burger>()
-    {
-
-    };
-
     private readonly BurgerRepository _burgerRepo;
     public BurgersController(BurgerRepository repo)
     {
@@ -55,34 +50,17 @@ namespace BurgerShack.Controllers
 
     // PUT api/Burgers/5
     [HttpPut("{id}")]
-    public ActionResult<List<Burger>> Put(int id, [FromBody] Burger burger)
+    public ActionResult<Burger> Put(int id, [FromBody] Burger burger)
     {
-      try
-      {
-        Burgers[id] = burger;
-        return Burgers;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH BURGER\"}");
-      }
+      return Ok(_burgerRepo.UpdateBurger(id, burger));
     }
 
-    // DELETE api/Burgers/5
+    // // DELETE api/Burgers/5
     [HttpDelete("{id}")]
-    public ActionResult<List<Burger>> Delete(int id)
+    public ActionResult<string> Delete(int id)
     {
-      try
-      {
-        Burgers.Remove(Burgers[id]);
-        return Burgers;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH BURGER\"}");
-      }
+      if (_burgerRepo.DeleteBurger(id)) { return Ok("Successfully Deleted"); }
+      return BadRequest();
     }
 
   }

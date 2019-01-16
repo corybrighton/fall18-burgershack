@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BurgerShack.Models;
+using BurgerShack.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerShack.Controllers
@@ -12,75 +13,54 @@ namespace BurgerShack.Controllers
   [ApiController]
   public class SidesController : ControllerBase
   {
-    public List<Side> Sides = new List<Side>()
+    private readonly SideRepository _sideRepo;
+    public SidesController(SideRepository repo)
     {
-      new Side("Mark Fries", "A delicious Fries with bacon and stuff", 7.56f),
-      new Side("Jake Fries", "Now with fries!", 8.54f),
-      new Side("D$ Fries", "It's Mostly Foraged", 6.24f)
-    };
-
-
+      _sideRepo = repo;
+    }
 
     // GET api/Sides
     [HttpGet]
     public IEnumerable<Side> Get()
     {
-      return Sides;
+      return _sideRepo.GetAll();
     }
 
-    // GET api/Fries/5
+    // GET api/Sides/5
     [HttpGet("{id}")]
     public ActionResult<Side> Get(int id)
     {
-      try
+      Side side = _sideRepo.GetSideById(id);
+      if (side != null)
       {
-        return Sides[id];
+        return Ok(side);
       }
-      catch (Exception ex)
+      else
       {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH Fries\"}");
+        return NotFound();
       }
     }
 
-    // POST api/Fries
+    // POST api/Sides
     [HttpPost]
     public ActionResult<List<Side>> Post([FromBody] Side side)
     {
-      Sides.Add(side);
-      return Sides;
+      return Ok(_sideRepo.AddSide(side));
     }
 
-    // PUT api/Fries/5
+    // PUT api/Sides/5
     [HttpPut("{id}")]
-    public ActionResult<List<Side>> Put(int id, [FromBody] Side fries)
+    public ActionResult<Side> Put(int id, [FromBody] Side side)
     {
-      try
-      {
-        Sides[id] = fries;
-        return Sides;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH BURGER\"}");
-      }
+      return Ok(_sideRepo.UpdateSide(id, side));
     }
 
-    // DELETE api/Fries/5
+    // // DELETE api/Sides/5
     [HttpDelete("{id}")]
-    public ActionResult<List<Side>> Delete(int id)
+    public ActionResult<string> Delete(int id)
     {
-      try
-      {
-        Sides.Remove(Sides[id]);
-        return Sides;
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine(ex);
-        return NotFound("{\"error\": \"NO SUCH BURGER\"}");
-      }
+      if (_sideRepo.DeleteSide(id)) { return Ok("Successfully Deleted"); }
+      return BadRequest();
     }
 
   }
